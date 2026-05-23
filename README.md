@@ -1,6 +1,6 @@
 #  GenAI Supply Chain Advisor
 
-**MBA Major Project — Nidhi Sharma | Amity University Online | IV Semester**  
+**MBA Major Project — Nidhi Sharma**  
 **Specialization:** Production and Operations Management
 
 ---
