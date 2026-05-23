@@ -1,11 +1,11 @@
-# 🔗 GenAI Supply Chain Advisor
+#  GenAI Supply Chain Advisor
 
 **MBA Major Project — Nidhi Sharma | Amity University Online | IV Semester**  
 **Specialization:** Production and Operations Management
 
 ---
 
-## 📌 About This Project
+##  About This Project
 
 An AI-powered supply chain advisor built as a practical implementation of the research paper:  
 **"Impact of Generative AI in E-Commerce Supply Chain Management"**
@@ -16,7 +16,7 @@ This tool demonstrates Generative AI in action — users can type real supply ch
 
 ---
 
-## 🤖 Features
+##  Features
 
 - **6 Specialist Modes** — General Advisor, Demand Forecasting, Disruption Response, Inventory Optimization, Last-Mile Logistics, Strategic AI Adoption
 - **Live GenAI Responses** — Powered by Anthropic Claude API (real AI, not simulated)
@@ -26,7 +26,7 @@ This tool demonstrates Generative AI in action — users can type real supply ch
 
 ---
 
-## 📊 Research Foundation
+##  Research Foundation
 
 | Metric | Finding |
 |--------|---------|
@@ -41,7 +41,7 @@ This tool demonstrates Generative AI in action — users can type real supply ch
 
 ---
 
-## 🛠️ Technology
+## Technology
 
 - HTML5 / CSS3 / Vanilla JavaScript
 - Anthropic Claude API (claude-sonnet-4)
@@ -49,7 +49,7 @@ This tool demonstrates Generative AI in action — users can type real supply ch
 
 ---
 
-## 👩‍🎓 Author
+## Author
 
 **Nidhi Sharma**  
 MBA (Production and Operations Management)
