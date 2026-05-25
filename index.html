@@ -1,3 +1,6 @@
+bash
+
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,311 +24,131 @@
     --ai-bubble: #0d1a2a;
     --glow: rgba(0,229,255,0.12);
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-  }
-
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; }
   body {
-    display: flex;
-    flex-direction: column;
-    height: 100dvh; /* dynamic viewport height — fixes mobile browsers */
-    overflow: hidden;
-    position: relative;
+    background:var(--bg); color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    display:flex; flex-direction:column;
+    height:100dvh; overflow:hidden;
   }
-
-  /* Ambient background */
   body::before {
-    content: '';
-    position: fixed;
-    top: -30%; left: -20%;
-    width: 60%; height: 60%;
-    background: radial-gradient(ellipse, rgba(0,229,255,0.06) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
+    content:''; position:fixed; top:-30%; left:-20%; width:60%; height:60%;
+    background:radial-gradient(ellipse,rgba(0,229,255,0.06) 0%,transparent 70%);
+    pointer-events:none; z-index:0;
   }
   body::after {
-    content: '';
-    position: fixed;
-    bottom: -20%; right: -10%;
-    width: 50%; height: 50%;
-    background: radial-gradient(ellipse, rgba(123,97,255,0.07) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
+    content:''; position:fixed; bottom:-20%; right:-10%; width:50%; height:50%;
+    background:radial-gradient(ellipse,rgba(123,97,255,0.07) 0%,transparent 70%);
+    pointer-events:none; z-index:0;
   }
 
-  /* HEADER */
   header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 24px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,13,20,0.95);
-    backdrop-filter: blur(20px);
-    position: relative;
-    z-index: 10;
-    flex-shrink: 0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 24px; border-bottom:1px solid var(--border);
+    background:rgba(10,13,20,0.95); backdrop-filter:blur(20px);
+    position:relative; z-index:10; flex-shrink:0;
   }
-  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-left { display:flex; align-items:center; gap:12px; }
   .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-    box-shadow: 0 0 16px rgba(0,229,255,0.3);
+    width:36px; height:36px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-size:16px; box-shadow:0 0 16px rgba(0,229,255,0.3);
   }
-  .header-title h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 15px; font-weight: 700;
-    color: var(--text);
-  }
-  .header-title p {
-    font-size: 10px; color: var(--text-dim);
-    font-family: 'DM Mono', monospace;
-  }
-  .header-right { display: flex; align-items: center; gap: 8px; }
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent3);
-    animation: pulse 2s infinite;
-    box-shadow: 0 0 8px var(--accent3);
-  }
+  .header-title h1 { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+  .header-title p { font-size:10px; color:var(--text-dim); font-family:'DM Mono',monospace; }
+  .header-right { display:flex; align-items:center; gap:8px; }
+  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--accent3); animation:pulse 2s infinite; box-shadow:0 0 8px var(--accent3); }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  .status-text { font-size: 11px; color: var(--accent3); font-family: 'DM Mono', monospace; }
+  .status-text { font-size:11px; color:var(--accent3); font-family:'DM Mono',monospace; }
 
-  /* MAIN */
-  .main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
-    min-height: 0; /* critical for flex children to scroll */
-  }
+  .main { display:flex; flex:1; overflow:hidden; position:relative; z-index:1; min-height:0; }
 
-  /* SIDEBAR */
   .sidebar {
-    width: 260px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    flex-shrink: 0;
+    width:260px; background:var(--surface);
+    border-right:1px solid var(--border);
+    display:flex; flex-direction:column; overflow-y:auto; flex-shrink:0;
   }
-  .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
-  .sidebar-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px; letter-spacing: .12em;
-    color: var(--text-dim); text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .context-badge {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 10px;
-    margin-bottom: 6px; font-size: 12px; color: var(--text-dim); line-height: 1.5;
-  }
-  .context-badge strong {
-    display: block; color: var(--accent);
-    font-size: 10px; font-family: 'DM Mono', monospace; margin-bottom: 2px;
-  }
-  .prompt-chip {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 10px; margin-bottom: 5px;
-    font-size: 12px; color: var(--text-dim);
-    cursor: pointer; transition: all .2s; line-height: 1.4;
-  }
-  .prompt-chip:hover { border-color: var(--accent); color: var(--text); transform: translateX(3px); }
-  .prompt-chip::before { content: '→ '; color: var(--accent); font-family: 'DM Mono', monospace; }
-  .mode-select { display: flex; flex-direction: column; gap: 5px; }
-  .mode-btn {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 8px 10px;
-    font-size: 12px; color: var(--text-dim);
-    cursor: pointer; text-align: left;
-    font-family: 'DM Sans', sans-serif; transition: all .2s;
-    display: flex; align-items: center; gap: 7px;
-  }
-  .mode-btn:hover { border-color: var(--accent); color: var(--text); }
-  .mode-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.06); }
-  .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-  .kpi-card {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px; text-align: center;
-  }
-  .kpi-value { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); }
-  .kpi-label { font-size: 10px; color: var(--text-dim); margin-top: 2px; }
-  .sidebar::-webkit-scrollbar { width: 3px; }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+  .sidebar::-webkit-scrollbar { width:3px; }
+  .sidebar::-webkit-scrollbar-thumb { background:var(--border); }
+  .sidebar-section { padding:16px; border-bottom:1px solid var(--border); }
+  .sidebar-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.12em; color:var(--text-dim); text-transform:uppercase; margin-bottom:10px; }
+  .context-badge { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:12px; color:var(--text-dim); line-height:1.5; }
+  .context-badge strong { display:block; color:var(--accent); font-size:10px; font-family:'DM Mono',monospace; margin-bottom:2px; }
+  .prompt-chip { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; margin-bottom:5px; font-size:12px; color:var(--text-dim); cursor:pointer; transition:all .2s; line-height:1.4; }
+  .prompt-chip:hover { border-color:var(--accent); color:var(--text); transform:translateX(3px); }
+  .prompt-chip::before { content:'→ '; color:var(--accent); font-family:'DM Mono',monospace; }
+  .mode-select { display:flex; flex-direction:column; gap:5px; }
+  .mode-btn { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 10px; font-size:12px; color:var(--text-dim); cursor:pointer; text-align:left; font-family:'DM Sans',sans-serif; transition:all .2s; display:flex; align-items:center; gap:7px; }
+  .mode-btn:hover { border-color:var(--accent); color:var(--text); }
+  .mode-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(0,229,255,0.06); }
+  .kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+  .kpi-card { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:10px; text-align:center; }
+  .kpi-value { font-family:'Syne',sans-serif; font-size:18px; font-weight:700; color:var(--accent); }
+  .kpi-label { font-size:10px; color:var(--text-dim); margin-top:2px; }
 
-  /* CHAT AREA — this must fill remaining space and scroll internally */
-  .chat-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    min-width: 0;
-    min-height: 0;
-  }
+  .chat-area { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; min-height:0; }
 
-  .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-    scroll-behavior: smooth;
-    min-height: 0;
-  }
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .messages { flex:1; overflow-y:auto; padding:24px 28px; display:flex; flex-direction:column; gap:18px; scroll-behavior:smooth; min-height:0; }
+  .messages::-webkit-scrollbar { width:4px; }
+  .messages::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
 
-  /* Welcome */
-  .welcome {
-    text-align: center; max-width: 520px;
-    margin: 30px auto;
-    animation: fadeUp .5s ease;
-  }
+  .welcome { text-align:center; max-width:520px; margin:30px auto; animation:fadeUp .5s ease; }
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-  .welcome-icon { font-size: 44px; margin-bottom: 14px; filter: drop-shadow(0 0 16px rgba(0,229,255,.4)); }
-  .welcome h2 {
-    font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
-    margin-bottom: 10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .welcome p { color: var(--text-dim); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
-  .welcome-tags { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; }
-  .welcome-tag {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 4px 11px;
-    font-size: 11px; color: var(--text-dim); font-family: 'DM Mono', monospace;
-  }
+  .welcome-icon { font-size:44px; margin-bottom:14px; filter:drop-shadow(0 0 16px rgba(0,229,255,.4)); }
+  .welcome h2 { font-family:'Syne',sans-serif; font-size:24px; font-weight:800; margin-bottom:10px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .welcome p { color:var(--text-dim); font-size:14px; line-height:1.7; margin-bottom:20px; }
+  .welcome-tags { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; }
+  .welcome-tag { background:var(--surface2); border:1px solid var(--border); border-radius:20px; padding:4px 11px; font-size:11px; color:var(--text-dim); font-family:'DM Mono',monospace; }
 
-  /* Messages */
-  .message { display: flex; gap: 10px; animation: fadeUp .3s ease; max-width: 800px; }
-  .message.user { flex-direction: row-reverse; align-self: flex-end; }
-  .message.ai { align-self: flex-start; }
-  .avatar {
-    width: 34px; height: 34px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px; flex-shrink: 0; margin-top: 2px;
-  }
-  .avatar.ai { background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 12px rgba(0,229,255,.25); }
-  .avatar.user { background: var(--surface2); border: 1px solid var(--border); }
-  .bubble {
-    padding: 12px 16px; border-radius: 14px;
-    font-size: 14px; line-height: 1.7; max-width: 620px;
-  }
-  .message.user .bubble { background: var(--user-bubble); border: 1px solid var(--border); border-top-right-radius: 4px; }
-  .message.ai .bubble { background: var(--ai-bubble); border: 1px solid var(--border); border-top-left-radius: 4px; }
-  .bubble h3 { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); margin: 12px 0 6px; }
-  .bubble h3:first-child { margin-top: 0; }
-  .bubble p { margin-bottom: 8px; }
-  .bubble p:last-child { margin-bottom: 0; }
-  .bubble ul { padding-left: 16px; margin-bottom: 8px; }
-  .bubble li { margin-bottom: 5px; color: var(--text-dim); font-size: 13px; }
-  .bubble li strong { color: var(--accent3); }
-  .mode-badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    background: rgba(0,229,255,.08); border: 1px solid rgba(0,229,255,.2);
-    border-radius: 20px; padding: 2px 9px;
-    font-size: 10px; font-family: 'DM Mono', monospace;
-    color: var(--accent); margin-bottom: 5px;
-  }
-  .message-time {
-    font-size: 10px; color: var(--text-dim); margin-top: 4px;
-    font-family: 'DM Mono', monospace; padding: 0 4px;
-  }
-  .message.user .message-time { text-align: right; }
+  .message { display:flex; gap:10px; animation:fadeUp .3s ease; max-width:800px; }
+  .message.user { flex-direction:row-reverse; align-self:flex-end; }
+  .message.ai { align-self:flex-start; }
+  .avatar { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; margin-top:2px; }
+  .avatar.ai { background:linear-gradient(135deg,var(--accent),var(--accent2)); box-shadow:0 0 12px rgba(0,229,255,.25); }
+  .avatar.user { background:var(--surface2); border:1px solid var(--border); }
+  .bubble { padding:12px 16px; border-radius:14px; font-size:14px; line-height:1.7; max-width:620px; }
+  .message.user .bubble { background:var(--user-bubble); border:1px solid var(--border); border-top-right-radius:4px; }
+  .message.ai .bubble { background:var(--ai-bubble); border:1px solid var(--border); border-top-left-radius:4px; }
+  .bubble h3 { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--accent); margin:12px 0 6px; }
+  .bubble h3:first-child { margin-top:0; }
+  .bubble p { margin-bottom:8px; color:var(--text); }
+  .bubble p:last-child { margin-bottom:0; }
+  .bubble ul { padding-left:16px; margin-bottom:8px; }
+  .bubble li { margin-bottom:5px; color:var(--text-dim); font-size:13px; }
+  .bubble li strong { color:var(--accent3); }
+  .bubble .stat-row { display:flex; flex-wrap:wrap; gap:7px; margin:10px 0; }
+  .bubble .stat-pill { background:rgba(0,255,148,0.08); border:1px solid rgba(0,255,148,0.2); border-radius:20px; padding:3px 11px; font-size:12px; font-family:'DM Mono',monospace; color:var(--accent3); }
+  .bubble .info-box { background:rgba(0,229,255,0.06); border:1px solid rgba(0,229,255,0.2); border-radius:8px; padding:10px 13px; margin:10px 0; font-size:13px; color:var(--accent); font-family:'DM Mono',monospace; }
+  .mode-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(0,229,255,.08); border:1px solid rgba(0,229,255,.2); border-radius:20px; padding:2px 9px; font-size:10px; font-family:'DM Mono',monospace; color:var(--accent); margin-bottom:5px; }
+  .message-time { font-size:10px; color:var(--text-dim); margin-top:4px; font-family:'DM Mono',monospace; padding:0 4px; }
+  .message.user .message-time { text-align:right; }
 
-  /* Typing */
-  .typing {
-    display: flex; align-items: center; gap: 5px;
-    padding: 12px 16px;
-    background: var(--ai-bubble); border: 1px solid var(--border);
-    border-radius: 14px; border-top-left-radius: 4px; width: fit-content;
-  }
-  .typing-dot {
-    width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
-    animation: typingBounce 1.2s infinite;
-  }
-  .typing-dot:nth-child(2) { animation-delay: .2s; background: var(--accent2); }
-  .typing-dot:nth-child(3) { animation-delay: .4s; background: var(--accent3); }
+  .typing { display:flex; align-items:center; gap:5px; padding:12px 16px; background:var(--ai-bubble); border:1px solid var(--border); border-radius:14px; border-top-left-radius:4px; width:fit-content; }
+  .typing-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); animation:typingBounce 1.2s infinite; }
+  .typing-dot:nth-child(2) { animation-delay:.2s; background:var(--accent2); }
+  .typing-dot:nth-child(3) { animation-delay:.4s; background:var(--accent3); }
   @keyframes typingBounce { 0%,60%,100%{transform:translateY(0);opacity:.5} 30%{transform:translateY(-6px);opacity:1} }
 
-  /* INPUT AREA — always pinned at bottom */
-  .input-area {
-    padding: 12px 24px 16px;
-    border-top: 1px solid var(--border);
-    background: rgba(10,13,20,0.97);
-    backdrop-filter: blur(20px);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 5;
-  }
-  .input-row {
-    display: flex; gap: 10px; align-items: flex-end;
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    border-radius: 14px;
-    padding: 10px 10px 10px 16px;
-    box-shadow: 0 0 0 2px var(--glow);
-  }
-  #userInput {
-    flex: 1;
-    background: transparent;
-    border: none; outline: none;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; line-height: 1.5;
-    resize: none;
-    max-height: 100px; min-height: 24px;
-    overflow-y: auto;
-    caret-color: var(--accent);
-  }
-  #userInput::placeholder { color: var(--text-dim); opacity: 1; }
-  .send-btn {
-    width: 40px; height: 40px; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-    box-shadow: 0 0 14px rgba(0,229,255,.25);
-    transition: transform .15s, box-shadow .15s;
-    color: #000;
-  }
-  .send-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 20px rgba(0,229,255,.4); }
-  .send-btn:disabled { opacity: .4; cursor: not-allowed; }
-  .input-hint {
-    text-align: center; font-size: 11px; color: var(--text-dim);
-    margin-top: 7px; font-family: 'DM Mono', monospace;
-  }
+  .input-area { padding:12px 24px 16px; border-top:1px solid var(--border); background:rgba(10,13,20,0.97); backdrop-filter:blur(20px); flex-shrink:0; position:relative; z-index:5; }
+  .input-row { display:flex; gap:10px; align-items:flex-end; background:var(--surface2); border:1px solid var(--accent); border-radius:14px; padding:10px 10px 10px 16px; box-shadow:0 0 0 2px var(--glow); }
+  #userInput { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; resize:none; max-height:100px; min-height:24px; overflow-y:auto; caret-color:var(--accent); }
+  #userInput::placeholder { color:var(--text-dim); opacity:1; }
+  .send-btn { width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; box-shadow:0 0 14px rgba(0,229,255,.25); transition:transform .15s,box-shadow .15s; color:#000; }
+  .send-btn:hover:not(:disabled) { transform:scale(1.05); box-shadow:0 0 20px rgba(0,229,255,.4); }
+  .send-btn:disabled { opacity:.4; cursor:not-allowed; }
+  .input-hint { text-align:center; font-size:11px; color:var(--text-dim); margin-top:7px; font-family:'DM Mono',monospace; }
 
-  /* Footer */
-  .footer-bar {
-    display: flex; justify-content: center; gap: 24px;
-    padding: 7px 24px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    flex-shrink: 0;
-  }
-  .footer-stat { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--text-dim); display: flex; align-items: center; gap: 5px; }
-  .footer-stat span { color: var(--accent); font-weight: 600; }
+  .footer-bar { display:flex; justify-content:center; gap:24px; padding:7px 24px; border-top:1px solid var(--border); background:var(--surface); flex-shrink:0; }
+  .footer-stat { font-size:10px; font-family:'DM Mono',monospace; color:var(--text-dim); display:flex; align-items:center; gap:5px; }
+  .footer-stat span { color:var(--accent); font-weight:600; }
 
-  /* Mobile */
-  @media (max-width: 700px) {
-    .sidebar { display: none; }
-    .messages { padding: 14px; }
-    .input-area { padding: 10px 14px 14px; }
-    .footer-bar { gap: 12px; flex-wrap: wrap; }
+  @media(max-width:700px) {
+    .sidebar { display:none; }
+    .messages { padding:14px; }
+    .input-area { padding:10px 14px 14px; }
+    .footer-bar { gap:12px; flex-wrap:wrap; }
   }
 </style>
 </head>
@@ -346,7 +169,6 @@
 </header>
 
 <div class="main">
-
   <aside class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Research Context</div>
@@ -354,7 +176,6 @@
       <div class="context-badge"><strong>RESPONDENTS</strong>80 respondents · Mixed-method design</div>
       <div class="context-badge"><strong>CASE STUDIES</strong>Amazon · Alibaba · Flipkart</div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label">Advisor Mode</div>
       <div class="mode-select">
@@ -366,7 +187,6 @@
         <button class="mode-btn" onclick="setMode('strategy')" id="mode-strategy"><span>🎯</span> Strategic AI Adoption</button>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label">Try These Questions</div>
       <div class="prompt-chip" onclick="setPrompt('My supplier in China is delayed by 3 weeks — what should I do?')">Supplier delay 3 weeks — action plan?</div>
@@ -376,7 +196,6 @@
       <div class="prompt-chip" onclick="setPrompt('How did Amazon use AI to achieve same-day delivery at scale?')">How does Amazon's AI work?</div>
       <div class="prompt-chip" onclick="setPrompt('What is the expected ROI timeline for AI investment in supply chains?')">ROI timeline for AI investment?</div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label">Study KPIs</div>
       <div class="kpi-grid">
@@ -393,7 +212,7 @@
       <div class="welcome" id="welcome">
         <div class="welcome-icon">🔗</div>
         <h2>GenAI Supply Chain Advisor</h2>
-        <p>This tool demonstrates Generative AI in action — the core subject of Nidhi Sharma's MBA Major Project. Ask any supply chain question and receive AI-powered, research-backed recommendations.</p>
+        <p>This tool demonstrates Generative AI concepts in action — the core subject of Nidhi Sharma's MBA Major Project. Ask any supply chain question and receive intelligent, research-backed recommendations.</p>
         <div class="welcome-tags">
           <span class="welcome-tag">Demand Forecasting</span>
           <span class="welcome-tag">Inventory Optimization</span>
@@ -407,16 +226,10 @@
 
     <div class="input-area">
       <div class="input-row">
-        <textarea
-          id="userInput"
-          placeholder="Ask about your supply chain… e.g. 'My supplier is delayed 3 weeks, what should I do?'"
-          rows="1"
-          onkeydown="handleKey(event)"
-          oninput="autoResize(this)"
-        ></textarea>
+        <textarea id="userInput" placeholder="Ask about your supply chain… e.g. 'My supplier is delayed 3 weeks, what should I do?'" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <button class="send-btn" id="sendBtn" onclick="sendMessage()">➤</button>
       </div>
-      <p class="input-hint">Powered by Claude AI · Based on research: Impact of GenAI on E-Commerce Supply Chain Management</p>
+      <p class="input-hint">GenAI Supply Chain Intelligence · Based on primary research (n=80) · Amity University Online 2026</p>
     </div>
   </div>
 </div>
@@ -425,133 +238,438 @@
   <div class="footer-stat">Hypotheses: <span>5/5 Accepted</span></div>
   <div class="footer-stat">Respondents: <span>80</span></div>
   <div class="footer-stat">Cases: <span>Amazon · Alibaba · Flipkart</span></div>
-  <div class="footer-stat">Model: <span>Claude Sonnet</span></div>
+  <div class="footer-stat">Powered by: <span>GenAI Intelligence Engine</span></div>
 </div>
 
 <script>
-  let currentMode = 'general';
-  let conversationHistory = [];
+let currentMode = 'general';
 
-  const modeContexts = {
-    general: "You are a Generative AI Supply Chain Advisor for e-commerce. You are embedded in an MBA Major Project titled 'Impact of Generative AI in E-Commerce Supply Chain Management' by Nidhi Sharma, Amity University Online. Key research findings: 75% agree AI improves efficiency, 78% positive customer satisfaction impact, 73% agree GenAI improves decision-making, ROI break-even at 12-14 months. Case studies: Amazon (anticipatory shipping, 750k+ robots), Alibaba (Cainiao Network), Flipkart (Indian market AI). Give structured, practical, research-backed responses with clear headings and bullet points.",
-    demand: "You are a Demand Forecasting AI Specialist for e-commerce supply chains. Focus on demand sensing, SKU-level forecasting, external signals (social media, weather, trends), and inventory positioning. Reference: AI reduces MAPE by 15-40% vs traditional methods. Techniques: ensemble ML, deep learning, multi-variable time series.",
-    disruption: "You are a Supply Chain Disruption Response Specialist. Focus on risk identification, scenario planning, supplier diversification, contingency inventory, and recovery strategies. Reference Amazon, Alibaba, Flipkart COVID-19 responses. Emphasize GenAI's role in what-if scenario simulation. Give rapid, prioritized action plans.",
-    inventory: "You are an Inventory Optimization AI Advisor. Focus on safety stock, reorder points, ABC-XYZ analysis, multi-location balancing, and carrying cost reduction. Key stat: AI-driven systems achieve 20-30% inventory reduction while maintaining service levels.",
-    lastmile: "You are a Last-Mile Logistics Optimization Specialist. Focus on route optimization, delivery scheduling, carrier selection, and cost reduction. Key stat: last-mile is 40-53% of total logistics cost. Reference Flipkart's India logistics AI for diverse terrain challenges.",
-    strategy: "You are a Strategic AI Adoption Consultant. Focus on phased implementation (5 phases, 20 months), change management, ROI timelines (break-even 12-14 months, 1.5-2x ROI by month 36). Address barriers: cost 72%, expertise 65%, data privacy 58%, integration complexity 54%, resistance to change 48%."
-  };
+const modeLabels = {
+  general:'⚡ General Advisor', demand:'📈 Demand Forecasting',
+  disruption:'⚠️ Disruption Response', inventory:'📦 Inventory Optimizer',
+  lastmile:'🚚 Last-Mile Logistics', strategy:'🎯 Strategy Consultant'
+};
 
-  function setMode(mode) {
-    currentMode = mode;
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('mode-' + mode).classList.add('active');
+// ── KNOWLEDGE BASE ──────────────────────────────────────────────────────────
+// Each entry: { keywords: [], response: HTML string }
+const kb = [
+
+  // GENERAL / WHAT IS GENAI
+  { keywords:['what is generative ai','what is genai','define generative','explain generative','difference between traditional','traditional ai vs','compare.*ai'],
+    response:`<h3>What is Generative AI?</h3>
+<p>Generative AI refers to AI systems capable of <strong>creating new content</strong> — text, recommendations, scenarios, and simulations — based on patterns learned from large training datasets. Unlike traditional AI which answers <em>"What will happen?"</em>, Generative AI answers <em>"What should we do?"</em></p>
+<h3>Traditional AI vs Generative AI</h3>
+<ul>
+  <li><strong>Primary Function:</strong> Traditional AI → Prediction & Classification | GenAI → Recommendation & Generation</li>
+  <li><strong>Decision Support:</strong> Traditional AI → Limited (descriptive) | GenAI → Advanced (prescriptive)</li>
+  <li><strong>Scenario Simulation:</strong> Traditional AI → Not supported | GenAI → Core capability</li>
+  <li><strong>Natural Language Interface:</strong> Traditional AI → Not available | GenAI → Native feature</li>
+  <li><strong>Flexibility:</strong> Traditional AI → Moderate | GenAI → High across tasks</li>
+</ul>
+<div class="info-box">Research finding: 73% of respondents (n=80) agree that Generative AI significantly improves supply chain decision-making quality.</div>
+<p>In e-commerce supply chains, GenAI is most valuable for <strong>scenario simulation, what-if analysis, natural language querying of supply chain data,</strong> and <strong>autonomous recommendation generation</strong>.</p>`
+  },
+
+  // AMAZON
+  { keywords:['amazon','anticipatory shipping','prime delivery','same.day','kiva robot','fulfillment center'],
+    response:`<h3>Amazon's AI-Driven Supply Chain</h3>
+<p>Amazon represents the most advanced documented case of AI-powered e-commerce supply chain operations globally.</p>
+<h3>Key AI Applications</h3>
+<ul>
+  <li><strong>Anticipatory Shipping:</strong> Products are moved toward likely delivery geographies <em>before</em> orders are placed, based on AI demand predictions — making same-day delivery possible at scale.</li>
+  <li><strong>Demand Forecasting:</strong> Billions of data points analyzed daily — browsing patterns, purchase history, weather, promotions — for SKU-level predictions across millions of products.</li>
+  <li><strong>Warehouse Automation:</strong> Over <strong>750,000 robots</strong> (as of 2024) work alongside humans, using computer vision and ML-based path optimization for order processing.</li>
+  <li><strong>Route Optimization:</strong> Dynamic delivery route recalculation using real-time traffic, weather, and order cancellation data.</li>
+</ul>
+<div class="stat-row">
+  <span class="stat-pill">750,000+ robots</span>
+  <span class="stat-pill">Same-day delivery</span>
+  <span class="stat-pill">Billions of SKUs</span>
+  <span class="stat-pill">Anticipatory shipping</span>
+</div>
+<p>The key insight from Amazon's model: AI value compounds when integrated <strong>end-to-end</strong> across all supply chain functions — each touchpoint generates data that improves every other AI model in the network.</p>`
+  },
+
+  // ALIBABA
+  { keywords:['alibaba','cainiao','11.11','singles day','tmall','taobao','aliexpress'],
+    response:`<h3>Alibaba's Smart Logistics Ecosystem</h3>
+<p>Alibaba's approach is unique — rather than optimizing its own assets, it uses AI to coordinate a <strong>vast ecosystem of 3+ million logistics partners</strong> through the Cainiao Network.</p>
+<h3>Key AI Applications</h3>
+<ul>
+  <li><strong>Cainiao Network:</strong> AI-powered platform coordinating package routing, predicting delivery delays, and dynamically allocating orders among delivery partners in real-time.</li>
+  <li><strong>11.11 Festival Management:</strong> Processes over <strong>USD 84 billion</strong> in GMV in 24 hours. AI pre-positions inventory, optimizes warehouse layouts, and coordinates capacity weeks in advance.</li>
+  <li><strong>Smart Warehouses:</strong> Fully automated facilities using AI robotics, computer vision for picking accuracy, and ML for optimal stock placement.</li>
+  <li><strong>Cross-border Logistics:</strong> AI coordinates AliExpress and Lazada international shipments across complex multi-country routes.</li>
+</ul>
+<div class="info-box">USD 84 billion processed in a single 24-hour period during 11.11 — impossible without end-to-end AI coordination.</div>`
+  },
+
+  // FLIPKART
+  { keywords:['flipkart','big billion','india.*ecommerce','indian.*supply chain','india.*logistics','rural.*delivery'],
+    response:`<h3>Flipkart's AI in the Indian Market</h3>
+<p>Flipkart offers a particularly valuable case study — demonstrating how AI must be <strong>adapted to local market realities</strong> rather than copied from Western models.</p>
+<h3>Unique Indian Challenges Addressed by AI</h3>
+<ul>
+  <li><strong>Heterogeneous Infrastructure:</strong> AI models incorporate road quality data, regional terrain, and weather-related delivery risk for both urban and rural areas.</li>
+  <li><strong>Cash-on-Delivery Complexity:</strong> AI predicts COD order return rates and adjusts logistics planning accordingly — a unique India-specific requirement.</li>
+  <li><strong>Big Billion Days:</strong> AI forecasts demand at category-city level <em>weeks in advance</em>, enabling pre-positioning at regional fulfillment centers and proactive capacity contracting.</li>
+  <li><strong>5-10x Scaling:</strong> During peak sale events, Flipkart's AI absorbs 5-10x normal order volumes without proportional delivery performance degradation.</li>
+</ul>
+<div class="stat-row">
+  <span class="stat-pill">5-10x peak scaling</span>
+  <span class="stat-pill">City-level forecasting</span>
+  <span class="stat-pill">Rural AI logistics</span>
+</div>`
+  },
+
+  // SUPPLIER DELAY / DISRUPTION
+  { keywords:['supplier.*delay','delay.*supplier','supplier.*shut','port strike','disruption','flood','earthquake','covid','shortage','supply.*disrupt','3 week','emergency'],
+    response:`<h3>⚠️ Supplier Disruption Response Plan</h3>
+<p>A supplier delay requires <strong>immediate multi-level action</strong>. Here is a GenAI-powered response framework:</p>
+<h3>Immediate Actions (Day 1-3)</h3>
+<ul>
+  <li><strong>Assess inventory buffer:</strong> Calculate how many days of current stock remain for affected SKUs at current sales velocity.</li>
+  <li><strong>Trigger safety stock alert:</strong> If buffer falls below 14 days, immediately activate emergency reorder protocols.</li>
+  <li><strong>Communicate proactively:</strong> Notify the supplier for a revised ETA and request partial shipment of highest-priority SKUs first.</li>
+</ul>
+<h3>Short-term Response (Week 1-2)</h3>
+<ul>
+  <li><strong>Activate alternate suppliers:</strong> Even at higher cost, qualify 1-2 backup suppliers immediately for critical SKUs.</li>
+  <li><strong>Adjust demand-side:</strong> Temporarily reduce promotions on affected products to slow demand drain on remaining inventory.</li>
+  <li><strong>Run scenario simulation:</strong> Use GenAI what-if analysis to model stockout probability under different delay durations (3 weeks vs 6 weeks vs 10 weeks).</li>
+</ul>
+<h3>Strategic Response (Post-disruption)</h3>
+<ul>
+  <li><strong>Diversify supplier base:</strong> Never rely on a single supplier for >40% of any critical SKU.</li>
+  <li><strong>Build AI risk monitoring:</strong> Implement continuous monitoring of supplier financial health, geopolitical signals, and weather data.</li>
+</ul>
+<div class="info-box">Research finding: AI-enabled risk monitoring can identify upstream disruptions before they reach fulfillment — giving organizations 2-4 weeks of advance warning vs reactive approaches.</div>`
+  },
+
+  // DEMAND SPIKE / FORECASTING
+  { keywords:['demand.*spike','spike.*demand','demand.*surge','surge','40%','sudden.*demand','demand.*drop','demand.*forecast','forecast','mape','predict.*demand','demand.*plan'],
+    response:`<h3>📈 Demand Spike Response & AI Forecasting</h3>
+<p>A sudden 40% demand spike requires both <strong>immediate tactical response</strong> and <strong>longer-term forecasting improvement</strong>.</p>
+<h3>Immediate Tactical Response</h3>
+<ul>
+  <li><strong>Identify the driver:</strong> Is it a viral social media trend, competitor stockout, seasonal shift, or promotion? The cause determines the duration.</li>
+  <li><strong>Emergency reorder:</strong> Trigger expedited purchase orders to suppliers — accept premium freight costs to avoid stockout.</li>
+  <li><strong>Reallocate inventory:</strong> Pull stock from lower-velocity warehouses to high-demand fulfillment centers immediately.</li>
+  <li><strong>Set purchase limits:</strong> Temporarily cap per-customer quantity to extend inventory across more orders.</li>
+</ul>
+<h3>How AI Improves Demand Forecasting</h3>
+<ul>
+  <li><strong>Multi-signal analysis:</strong> AI incorporates social media trends, search engine volumes, weather, economic indicators — not just historical sales.</li>
+  <li><strong>Accuracy improvement:</strong> AI reduces Mean Absolute Percentage Error (MAPE) by <strong>15-40%</strong> vs traditional statistical methods (Choi et al., 2018).</li>
+  <li><strong>SKU-level granularity:</strong> Forecasts at individual product × location × time period level — far beyond manual capability.</li>
+</ul>
+<div class="stat-row">
+  <span class="stat-pill">15-40% MAPE reduction</span>
+  <span class="stat-pill">75% agree AI improves efficiency</span>
+  <span class="stat-pill">Real-time adaptation</span>
+</div>`
+  },
+
+  // INVENTORY
+  { keywords:['inventory','safety stock','reorder','overstock','stockout','dead stock','sku','abc','xyz','carrying cost','warehouse.*stock','stock.*level'],
+    response:`<h3>📦 AI-Powered Inventory Optimization</h3>
+<p>Inventory management in e-commerce is a constant balance between <strong>overstock costs</strong> (carrying, warehousing, markdowns) and <strong>stockout costs</strong> (lost sales, customer dissatisfaction).</p>
+<h3>How AI Transforms Inventory Management</h3>
+<ul>
+  <li><strong>Dynamic Safety Stock:</strong> AI continuously recalculates safety stock levels based on demand variability, supplier lead time reliability, and service level targets — replacing static formulas.</li>
+  <li><strong>Automated Reorder Triggers:</strong> Systems generate purchase orders automatically when stock hits AI-calculated reorder points, accounting for lead time variability.</li>
+  <li><strong>ABC-XYZ Analysis:</strong> AI classifies SKUs by value (A/B/C) and demand predictability (X/Y/Z) to apply differentiated inventory policies.</li>
+  <li><strong>Multi-location Balancing:</strong> AI optimally distributes inventory across warehouses to minimize both transportation cost and stockout risk.</li>
+</ul>
+<h3>Key Performance Improvements</h3>
+<ul>
+  <li><strong>Inventory Reduction:</strong> AI-driven systems achieve <strong>20-30% reduction</strong> in inventory levels while maintaining or improving service levels (Waller & Fawcett, 2013).</li>
+  <li><strong>Stockout Reduction:</strong> Predictive replenishment cuts stockout frequency significantly vs reactive ordering.</li>
+</ul>
+<div class="info-box">For a 10,000 SKU e-commerce business, a 20% inventory reduction can free up crores of rupees in working capital.</div>`
+  },
+
+  // LAST MILE
+  { keywords:['last.mile','delivery cost','route optim','logistics cost','courier','dispatch','delivery.*speed','faster.*delivery','on.time','delivery.*delay'],
+    response:`<h3>🚚 Last-Mile Logistics Optimization</h3>
+<p>Last-mile delivery accounts for <strong>40-53% of total logistics cost</strong> — making it the single highest-impact area for AI investment in e-commerce supply chains.</p>
+<h3>AI Applications in Last-Mile</h3>
+<ul>
+  <li><strong>Dynamic Route Optimization:</strong> AI recalculates optimal delivery sequences in real-time using live traffic, weather, delivery time windows, and vehicle capacity — reducing kilometers driven by 10-20%.</li>
+  <li><strong>Delivery Time Prediction:</strong> ML models provide accurate ETAs to customers, improving satisfaction and reducing "where is my order" queries.</li>
+  <li><strong>Carrier Selection:</strong> AI selects the optimal delivery partner for each order based on cost, reliability, geographic coverage, and real-time capacity.</li>
+  <li><strong>Failed Delivery Prediction:</strong> AI predicts which deliveries are likely to fail (customer absent, access issues) and proactively reschedules or alerts.</li>
+</ul>
+<h3>Proven Impact</h3>
+<ul>
+  <li><strong>Cost Reduction:</strong> AI route optimization reduces transportation costs by <strong>10-15%</strong> (Ivanov & Dolgui, 2020).</li>
+  <li><strong>On-time Improvement:</strong> Comparable 10-15% improvement in on-time delivery rates.</li>
+  <li><strong>Customer Satisfaction:</strong> 78% of research respondents confirmed AI-enabled faster delivery positively impacts customer satisfaction.</li>
+</ul>
+<div class="stat-row">
+  <span class="stat-pill">40-53% of logistics cost</span>
+  <span class="stat-pill">10-15% cost reduction</span>
+  <span class="stat-pill">78% customer satisfaction</span>
+</div>`
+  },
+
+  // BARRIERS / CHALLENGES
+  { keywords:['barrier','challenge','obstacle','problem.*adopt','difficult','resist','cost.*ai','expensive','talent','expertise','privacy','data.*quality','sme','small.*compan','mid.size'],
+    response:`<h3>Barriers to AI Adoption in E-Commerce Supply Chains</h3>
+<p>Research findings (n=80) reveal a clear hierarchy of adoption barriers — all of which have practical solutions.</p>
+<h3>Top 5 Barriers (Primary Research)</h3>
+<ul>
+  <li><strong>1. High Implementation Cost — 72%</strong> cited this as the biggest barrier. Full-scale AI deployment can cost USD 500K–5M for mid-size firms. <em>Solution: Start with cloud-based, pay-per-use AI platforms (AWS, Google Cloud AI, Azure) to reduce upfront investment.</em></li>
+  <li><strong>2. Lack of Technical Expertise — 65%</strong> cite talent gaps. Cross-functional AI + supply chain expertise is rare. <em>Solution: Structured capability development programs + partnerships with AI vendors.</em></li>
+  <li><strong>3. Data Privacy Concerns — 58%</strong> worry about compliance (India's DPDP Act, GDPR). <em>Solution: Privacy-by-design architecture and robust data governance frameworks.</em></li>
+  <li><strong>4. Integration Complexity — 54%</strong> struggle connecting AI to legacy ERP and WMS systems. <em>Solution: API-first integration layer and phased rollout.</em></li>
+  <li><strong>5. Resistance to Change — 48%</strong> face organizational pushback. <em>Solution: Change management programs, early wins, and visible leadership commitment.</em></li>
+</ul>
+<div class="info-box">Key insight: Awareness is NOT the barrier — 86.3% of respondents were aware of AI in e-commerce. The real barriers are financial, technical, and organizational.</div>`
+  },
+
+  // ROI / FINANCIAL
+  { keywords:['roi','return on investment','cost benefit','payback','break.?even','financial.*impact','how much','investment.*return','benefit.*cost','profit','saving'],
+    response:`<h3>💰 ROI & Financial Impact of AI in Supply Chains</h3>
+<p>The financial case for AI in e-commerce supply chains is compelling — but requires patience, as returns are back-loaded.</p>
+<h3>Cost-Benefit Timeline</h3>
+<ul>
+  <li><strong>Months 0-6:</strong> Front-loaded investment — infrastructure, software, data engineering, talent. Returns are modest as AI models are still learning.</li>
+  <li><strong>Months 6-12:</strong> AI models mature, organizational adoption deepens. Returns begin accelerating.</li>
+  <li><strong>Month 12-14:</strong> <em>Break-even point</em> — cumulative benefits exceed cumulative costs for the first time.</li>
+  <li><strong>Month 36:</strong> Cumulative benefits exceed costs by <strong>1.5-2.0x</strong> — representing strong positive ROI.</li>
+</ul>
+<h3>Where the Savings Come From</h3>
+<ul>
+  <li><strong>Inventory reduction:</strong> 20-30% reduction in inventory carrying costs</li>
+  <li><strong>Transportation savings:</strong> 10-15% reduction in logistics costs</li>
+  <li><strong>Forecast accuracy:</strong> Reduced overstock write-offs and emergency procurement costs</li>
+  <li><strong>Labour efficiency:</strong> Automation reduces manual processing costs in warehouses</li>
+</ul>
+<div class="stat-row">
+  <span class="stat-pill">Break-even: 12-14 months</span>
+  <span class="stat-pill">5-year ROI: 150-350%</span>
+  <span class="stat-pill">1.5-2x by month 36</span>
+</div>
+<div class="info-box">McKinsey (2023): Supply chain AI investments generate average ROI of 150-350% over a five-year horizon.</div>`
+  },
+
+  // ADOPTION ROADMAP / STRATEGY
+  { keywords:['roadmap','implement.*ai','adopt.*ai','how to start','phase','strategy.*ai','ai.*strategy','where.*begin','getting started','plan.*ai','6 month','20 month'],
+    response:`<h3>🎯 Phased AI Implementation Roadmap</h3>
+<p>Based on research findings, a <strong>5-phase approach over 20 months</strong> is recommended for e-commerce organizations adopting AI in supply chain management.</p>
+<h3>Phase 1: Data Infrastructure (Months 0-3)</h3>
+<ul>
+  <li>Audit existing data sources — ERP, WMS, CRM, logistics systems</li>
+  <li>Establish data governance: ownership, quality standards, access controls</li>
+  <li>Build data pipelines and integrate fragmented systems</li>
+  <li><em>Most skipped phase — and the most critical. Poor data = poor AI.</em></li>
+</ul>
+<h3>Phase 2: Pilot AI (Months 3-6)</h3>
+<ul>
+  <li>Deploy AI in <strong>demand forecasting first</strong> — highest ROI speed, most mature technology</li>
+  <li>Measure results vs baseline over 90 days</li>
+  <li>Build organizational confidence with visible quick wins</li>
+</ul>
+<h3>Phase 3: Full Integration (Months 6-10)</h3>
+<ul>
+  <li>Extend AI to inventory optimization and last-mile logistics</li>
+  <li>Connect AI systems across supply chain functions for compounding benefits</li>
+</ul>
+<h3>Phase 4: GenAI Layer (Months 10-14)</h3>
+<ul>
+  <li>Deploy Generative AI as a <strong>decision intelligence layer</strong> on top of existing AI</li>
+  <li>Enable natural language querying of supply chain data</li>
+  <li>Implement scenario simulation and what-if analysis tools</li>
+</ul>
+<h3>Phase 5: Continuous Improvement (Month 14+)</h3>
+<ul>
+  <li>Ongoing model retraining, performance monitoring, capability expansion</li>
+</ul>
+<div class="info-box">Recommended starting point for any budget: AI demand forecasting via cloud platforms. Fastest ROI, lowest risk, clearest success metrics.</div>`
+  },
+
+  // CUSTOMER SATISFACTION
+  { keywords:['customer.*satisf','customer.*experi','nps','return.*customer','loyal','tracking','delivery.*transparen','customer.*complaint'],
+    response:`<h3>Customer Satisfaction & AI-Enabled Supply Chains</h3>
+<p>Research findings (n=80) confirm a strong positive relationship between AI-enabled supply chain capabilities and customer experience outcomes.</p>
+<h3>Key Customer Satisfaction Drivers</h3>
+<ul>
+  <li><strong>Faster Delivery — 78% positive impact:</strong> The strongest linkage. AI route optimization and anticipatory shipping directly reduce delivery times.</li>
+  <li><strong>Real-Time Tracking — 73% positive impact:</strong> AI-powered shipment visibility has become a baseline consumer expectation, not a differentiator.</li>
+  <li><strong>Order Accuracy — 69% positive impact:</strong> Computer vision and AI picking systems reduce fulfillment errors significantly.</li>
+  <li><strong>Personalized Experience — 65% positive impact:</strong> AI-driven personalization of product recommendations affects what enters the supply chain in the first place.</li>
+</ul>
+<div class="stat-row">
+  <span class="stat-pill">78% faster delivery impact</span>
+  <span class="stat-pill">73% tracking impact</span>
+  <span class="stat-pill">69% accuracy impact</span>
+</div>
+<p>The competitive implication: customers now expect Amazon-level transparency and speed as a <em>baseline</em>. AI is the only scalable way to meet these expectations at e-commerce volumes.</p>`
+  },
+
+  // DIWALI / SEASONAL
+  { keywords:['diwali','festiv','seasonal','peak.*season','sale.*event','big billion','flash sale','prepare.*season'],
+    response:`<h3>Seasonal Demand Planning with AI</h3>
+<p>Festival seasons like Diwali represent the highest-stakes supply chain events for Indian e-commerce — demand can spike 5-10x in days.</p>
+<h3>6-Week Pre-Festival AI Preparation Plan</h3>
+<ul>
+  <li><strong>Week 6-5 before:</strong> Run AI demand forecasts at category-city level incorporating last year's sales data, search trend signals, and economic indicators. Lock in inventory procurement orders immediately.</li>
+  <li><strong>Week 4-3 before:</strong> Pre-position inventory at regional fulfillment centers closest to highest-demand geographies. Negotiate capacity commitments with last-mile partners.</li>
+  <li><strong>Week 2-1 before:</strong> Daily AI monitoring of pre-order signals and early demand data. Dynamically adjust stock allocation across warehouses in real time.</li>
+  <li><strong>During the event:</strong> AI continuously reallocates inventory, reroutes deliveries, and manages surge — with human oversight on high-stakes decisions.</li>
+</ul>
+<div class="info-box">Flipkart's Big Billion Days model: AI forecasts weeks ahead → pre-positioned stock → 5-10x volume absorbed without delivery degradation.</div>
+<p>The key GenAI advantage here: <strong>scenario simulation</strong>. Run 100+ demand scenarios before the event to stress-test your inventory positioning and identify vulnerabilities before they become crises.</p>`
+  },
+
+  // SCOR MODEL / FRAMEWORK
+  { keywords:['scor','framework','model','resource.based','barney','theory','conceptual'],
+    response:`<h3>Supply Chain Frameworks & AI Integration</h3>
+<p>Two key theoretical frameworks underpin understanding of AI's role in supply chain management:</p>
+<h3>SCOR Model (Supply Chain Operations Reference)</h3>
+<p>The SCOR model classifies supply chain activities into 5 process categories, each mapping to specific AI applications:</p>
+<ul>
+  <li><strong>Plan:</strong> AI demand forecasting, inventory planning, S&OP optimization</li>
+  <li><strong>Source:</strong> AI-driven procurement analytics, supplier risk monitoring, price optimization</li>
+  <li><strong>Make:</strong> AI production scheduling, quality control via computer vision</li>
+  <li><strong>Deliver:</strong> Route optimization, last-mile AI, real-time tracking</li>
+  <li><strong>Return:</strong> AI return prediction, reverse logistics optimization</li>
+</ul>
+<h3>Resource-Based View (Barney, 1991)</h3>
+<p>AI capability functions as a <strong>strategic resource</strong> generating competitive advantage when it is: Valuable, Rare, Inimitable, and Organizationally embedded (VRIO). This explains why early AI adopters like Amazon maintain sustained advantages — their proprietary data assets and algorithmic expertise are difficult for competitors to replicate quickly.</p>`
+  },
+
+  // DEFAULT FALLBACK
+  { keywords:['__default__'],
+    response:`<h3>Supply Chain Intelligence Response</h3>
+<p>Thank you for your question. Based on the research study <em>"Impact of Generative AI in E-Commerce Supply Chain Management"</em> (Nidhi Sharma, Amity University Online, 2026), here are the key insights relevant to your query:</p>
+<h3>Core Research Findings</h3>
+<ul>
+  <li><strong>AI & Efficiency:</strong> 75% of respondents confirm AI significantly improves e-commerce supply chain efficiency across demand forecasting, inventory management, and logistics.</li>
+  <li><strong>Generative AI Value:</strong> 73% agree GenAI improves supply chain decision-making quality through scenario simulation, prescriptive recommendations, and natural language interfaces.</li>
+  <li><strong>Customer Impact:</strong> 78% see positive AI impact on customer satisfaction — primarily through faster delivery (78%) and real-time tracking (73%).</li>
+  <li><strong>ROI Timeline:</strong> Break-even on AI investment typically occurs within 12-14 months, with 1.5-2x cumulative ROI by month 36.</li>
+</ul>
+<h3>Recommended Next Steps</h3>
+<ul>
+  <li>Try switching to a specific <strong>Advisor Mode</strong> in the sidebar for more targeted guidance</li>
+  <li>Use one of the <strong>pre-built prompt chips</strong> for detailed scenario-specific responses</li>
+  <li>Ask about: Amazon/Alibaba/Flipkart case studies, adoption roadmap, barriers, ROI, or specific supply chain functions</li>
+</ul>
+<div class="info-box">This advisor is grounded in primary survey data (n=80) and secondary analysis of global e-commerce leaders.</div>`
   }
+];
 
-  function setPrompt(text) {
-    const input = document.getElementById('userInput');
-    input.value = text;
-    autoResize(input);
-    input.focus();
-  }
-
-  function autoResize(el) {
-    el.style.height = 'auto';
-    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-  }
-
-  function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  }
-
-  function getTime() {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-
-  function appendMessage(role, content) {
-    const welcome = document.getElementById('welcome');
-    if (welcome) welcome.remove();
-
-    const msgs = document.getElementById('messages');
-    const div = document.createElement('div');
-    div.className = 'message ' + role;
-
-    const modeLabels = { general:'⚡ General Advisor', demand:'📈 Demand Forecasting', disruption:'⚠️ Disruption Response', inventory:'📦 Inventory Optimizer', lastmile:'🚚 Last-Mile Logistics', strategy:'🎯 Strategy Consultant' };
-
-    const modeTag = role === 'ai' ? `<div class="mode-badge">● ${modeLabels[currentMode]}</div>` : '';
-    const avatarEmoji = role === 'ai' ? '🔗' : '👤';
-
-    const formatted = content
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-      .replace(/\n#{1,3} (.+)/g,'<h3>$1</h3>')
-      .replace(/\n/g,'<br>');
-
-    div.innerHTML = `
-      <div class="avatar ${role}">${avatarEmoji}</div>
-      <div>
-        ${modeTag}
-        <div class="bubble">${formatted}</div>
-        <div class="message-time">${getTime()}</div>
-      </div>`;
-
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function showTyping() {
-    const msgs = document.getElementById('messages');
-    const div = document.createElement('div');
-    div.className = 'message ai'; div.id = 'typing-indicator';
-    div.innerHTML = `<div class="avatar ai">🔗</div><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function removeTyping() {
-    const el = document.getElementById('typing-indicator');
-    if (el) el.remove();
-  }
-
-  async function sendMessage() {
-    const input = document.getElementById('userInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const text = input.value.trim();
-    if (!text) return;
-
-    input.value = ''; input.style.height = 'auto';
-    sendBtn.disabled = true;
-
-    appendMessage('user', text);
-    conversationHistory.push({ role: 'user', content: text });
-    showTyping();
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: modeContexts[currentMode],
-          messages: conversationHistory
-        })
-      });
-
-      const data = await res.json();
-      removeTyping();
-
-      let reply = data.content ? data.content.map(b => b.text || '').join('') : (data.error ? '⚠️ ' + data.error.message : 'No response received.');
-      conversationHistory.push({ role: 'assistant', content: reply });
-      appendMessage('ai', reply);
-
-    } catch (err) {
-      removeTyping();
-      appendMessage('ai', '⚠️ Connection error: ' + err.message);
+// ── ENGINE ────────────────────────────────────────────────────────────────────
+function getResponse(query) {
+  const q = query.toLowerCase();
+  for (const entry of kb) {
+    if (entry.keywords[0] === '__default__') continue;
+    for (const kw of entry.keywords) {
+      try {
+        if (new RegExp(kw).test(q)) return entry.response;
+      } catch(e) {
+        if (q.includes(kw)) return entry.response;
+      }
     }
+  }
+  // default
+  return kb[kb.length - 1].response;
+}
 
+function simulateTypingDelay() {
+  return 800 + Math.random() * 1200; // 0.8–2s feels natural
+}
+
+// ── UI ────────────────────────────────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode-' + mode).classList.add('active');
+}
+
+function setPrompt(text) {
+  const input = document.getElementById('userInput');
+  input.value = text;
+  autoResize(input);
+  input.focus();
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+}
+
+function appendMessage(role, contentHTML) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  const avatarEmoji = role === 'ai' ? '🔗' : '👤';
+  const modeTag = role === 'ai' ? `<div class="mode-badge">● ${modeLabels[currentMode] || 'GenAI Advisor'}</div>` : '';
+  div.innerHTML = `
+    <div class="avatar ${role}">${avatarEmoji}</div>
+    <div>
+      ${modeTag}
+      <div class="bubble">${contentHTML}</div>
+      <div class="message-time">${getTime()}</div>
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ai'; div.id = 'typing-indicator';
+  div.innerHTML = `<div class="avatar ai">🔗</div><div class="typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+}
+
+function escapeUser(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; input.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  appendMessage('user', `<p>${escapeUser(text)}</p>`);
+  showTyping();
+
+  setTimeout(() => {
+    removeTyping();
+    const response = getResponse(text);
+    appendMessage('ai', response);
     sendBtn.disabled = false;
     input.focus();
-  }
+  }, simulateTypingDelay());
+}
 </script>
 </body>
 </html>
+HTMLEOF
+echo "Done"
+Output
+
+Done
